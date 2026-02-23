@@ -1,0 +1,66 @@
+name: spaces checkout run
+author: Tyler Gilbert
+description: Github Action for executing a spaces checkout/spaces run sequence
+branding:
+  icon: activity
+  color: purple
+
+inputs:
+  checkout-scripts:
+    description: 'Newline-separated list of checkout script paths (passed as --script arguments to spaces checkout)'
+    required: false
+    default: ''
+  checkout-url:
+    description: 'URL of the repository to checkout (uses spaces checkout-repo command; mutually exclusive with checkout-scripts)'
+    required: false
+    default: ''
+  checkout-rev:
+    description: 'Revision (branch, tag, or SHA) when using checkout-url'
+    required: false
+    default: 'main'
+  workspace:
+    description: 'Name of the workspace directory to create'
+    required: true
+  run-target:
+    description: 'Target to pass to spaces run (e.g. //:test). Leave empty to run all targets.'
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - name: Install Spaces
+      uses: work-spaces/install-spaces@v0.15.26
+
+    - name: Spaces Checkout Repo
+      if: ${{ inputs.checkout-url != '' }}
+      env:
+        CHECKOUT_URL: ${{ inputs.checkout-url }}
+        CHECKOUT_REV: ${{ inputs.checkout-rev }}
+        WORKSPACE: ${{ inputs.workspace }}
+      run: |
+        spaces --ci checkout-repo \
+          --url="${CHECKOUT_URL}" \
+          --rev="${CHECKOUT_REV}" \
+          --name="${WORKSPACE}"
+      shell: bash
+
+    - name: Spaces Checkout Scripts
+      if: ${{ inputs.checkout-scripts != '' }}
+      env:
+        CHECKOUT_SCRIPTS: ${{ inputs.checkout-scripts }}
+        WORKSPACE: ${{ inputs.workspace }}
+      run: |
+        SCRIPT_ARGS=""
+        while IFS= read -r script; do
+          [ -n "$script" ] && SCRIPT_ARGS="${SCRIPT_ARGS} --script=${script}"
+        done <<< "${CHECKOUT_SCRIPTS}"
+        spaces --ci checkout ${SCRIPT_ARGS} --name="${WORKSPACE}"
+      shell: bash
+
+    - name: Spaces Run
+      env:
+        WORKSPACE: ${{ inputs.workspace }}
+        RUN_TARGET: ${{ inputs.run-target }}
+      run: cd "${WORKSPACE}" && spaces --ci run ${RUN_TARGET}
+      shell: bash

@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule: [cron: "40 1 * * *"]
+
+permissions:
+  contents: read
+
+jobs:
+  test-checkout-scripts:
+    name: Test checkout-scripts on ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Clone workflows repository
+        run: git clone https://github.com/work-spaces/workflows.git
+
+      - name: Test spaces checkout-scripts and run
+        uses: ./
+        with:
+          checkout-scripts: |
+            workflows/preload
+            workflows/test2
+            workflows/test
+          workspace: test-workspace
+          run-target: //test:list
