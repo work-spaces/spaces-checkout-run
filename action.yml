@@ -18,12 +18,28 @@ runs:
   steps:
     - uses: work-spaces/install-spaces@v0.15.26
 
-    - run: spaces checkout $SPACES_CHECKOUT_ARGS
+    - id: create-workspace
+      run: |
+        WORKSPACE_DIR="spaces-run-$(date +%Y%m%d-%H%M%S)-$$"
+        mkdir -p "$WORKSPACE_DIR"
+        echo "dir=$WORKSPACE_DIR" >> $GITHUB_OUTPUT
       shell: bash
-      env:
-        SPACES_CHECKOUT_ARGS: ${{ inputs.checkout }}
 
-    - run: spaces run $SPACES_RUN_ARGS
+    - run: |
+        spaces checkout --name=${{ steps.create-workspace.outputs.dir }} ${{ inputs.checkout }}
+      shell: bash
+
+    - run: |
+        cd ${{ steps.create-workspace.outputs.dir }}
+        spaces run ${{ inputs.run }}
+      shell: bash
+
+    - if: always()
+      run: |
+        if [ -d "$WORKSPACE_DIR" ]; then
+          rm -rf "$WORKSPACE_DIR"
+          echo "Cleaned up workspace directory: $WORKSPACE_DIR"
+        fi
       shell: bash
       env:
-        SPACES_RUN_ARGS: ${{ inputs.run }}
+        WORKSPACE_DIR: ${{ steps.create-workspace.outputs.dir }}
