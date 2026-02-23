@@ -1,0 +1,29 @@
+name: spaces checkout run
+author: work-spaces
+description: Installs spaces, runs spaces checkout, then spaces run
+branding:
+  icon: play
+  color: purple
+
+inputs:
+  checkout:
+    description: Arguments to pass to spaces checkout
+    required: true
+  run:
+    description: Arguments to pass to spaces run
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: work-spaces/install-spaces@v0.15.26
+
+    - run: spaces checkout $SPACES_CHECKOUT_ARGS
+      shell: bash
+      env:
+        SPACES_CHECKOUT_ARGS: ${{ inputs.checkout }}
+
+    - run: spaces run $SPACES_RUN_ARGS
+      shell: bash
+      env:
+        SPACES_RUN_ARGS: ${{ inputs.run }}
