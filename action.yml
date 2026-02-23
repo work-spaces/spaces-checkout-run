@@ -26,7 +26,7 @@ runs:
       shell: bash
 
     - run: |
-        spaces checkout --name=${{ steps.create-workspace.outputs.dir }} ${{ inputs.checkout }}
+        spaces checkout-repo --name=${{ steps.create-workspace.outputs.dir }} ${{ inputs.checkout }}
       shell: bash
 
     - run: |
