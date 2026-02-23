@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: work-spaces/spaces-checkout-run@v1
         with:
-          checkout: https://github.com/my-org/my-spaces --name=my-workspace
+          checkout: checkout-repo --url=https://github.com/my-org/my-spaces --rev=main
           run: //my-workspace:build
 ```
 
