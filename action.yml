@@ -26,12 +26,12 @@ runs:
       shell: bash
 
     - run: |
-        spaces checkout-repo --name=${{ steps.create-workspace.outputs.dir }} ${{ inputs.checkout }}
+        spaces --ci checkout-repo --name=${{ steps.create-workspace.outputs.dir }} ${{ inputs.checkout }}
       shell: bash
 
     - run: |
         cd ${{ steps.create-workspace.outputs.dir }}
-        spaces run ${{ inputs.run }}
+        spaces --ci run ${{ inputs.run }}
       shell: bash
 
     - if: always()
