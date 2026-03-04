@@ -12,6 +12,10 @@ inputs:
   run:
     description: Arguments to pass to spaces run
     required: true
+  github_token:
+    description: GitHub token for authorizing access to GitHub repositories
+    required: false
+    default: ${{ github.token }}
 
 runs:
   using: composite
@@ -28,11 +32,15 @@ runs:
     - run: |
         spaces --ci checkout-repo --name=${{ steps.create-workspace.outputs.dir }} ${{ inputs.checkout }}
       shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
 
     - run: |
         cd ${{ steps.create-workspace.outputs.dir }}
         spaces --ci run ${{ inputs.run }}
       shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
 
     - if: always()
       run: |
