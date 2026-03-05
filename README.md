@@ -17,6 +17,7 @@ GitHub Action for executing a `spaces checkout` / `spaces run` sequence using th
 |-------|----------|-------------|
 | `checkout` | Yes | Arguments to pass to `spaces checkout` |
 | `run` | Yes | Arguments to pass to `spaces run` |
+| `github-token` | No | GitHub token for authorizing access to GitHub repositories. Defaults to an empty string |
 
 ## Example
 
@@ -29,6 +30,7 @@ jobs:
         with:
           checkout: checkout-repo --url=https://github.com/my-org/my-spaces --rev=main
           run: //my-workspace:build
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ## How it works
