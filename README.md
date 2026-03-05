@@ -17,7 +17,7 @@ GitHub Action for executing a `spaces checkout` / `spaces run` sequence using th
 |-------|----------|-------------|
 | `checkout` | Yes | Arguments to pass to `spaces checkout` |
 | `run` | Yes | Arguments to pass to `spaces run` |
-| `github_token` | No | GitHub token for authorizing access to GitHub repositories. Defaults to `${{ github.token }}` |
+| `github-token` | No | GitHub token for authorizing access to GitHub repositories. Defaults to an empty string |
 
 ## Example
 
