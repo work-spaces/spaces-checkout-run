@@ -37,7 +37,7 @@ runs:
 
     - run: |
         cd ${{ steps.create-workspace.outputs.dir }}
-        spaces --ci run ${{ inputs.run }}
+        spaces --ci --rescan run ${{ inputs.run }}
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.github-token }}
