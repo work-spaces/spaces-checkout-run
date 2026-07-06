@@ -20,7 +20,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: work-spaces/install-spaces@v0.17.2
+    - uses: work-spaces/install-spaces@v0.17.3
 
     - id: create-workspace
       run: |
